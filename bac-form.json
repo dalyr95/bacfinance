@@ -1,0 +1,608 @@
+[
+    {
+        "bacname": "clientId",
+        "type": "hidden",
+        "value": "84520368.1488968796"
+    },
+    {
+        "bacname": "currentUserId",
+        "type": "hidden",
+        "value": ""
+    },
+    {
+        "bacname": "productAdvertId",
+        "type": "hidden",
+        "value": "933474"
+    },
+    {
+        "bacname": "financeQuoteId",
+        "type": "hidden",
+        "value": "4278907"
+    },
+    {
+        "bacname": "deliveryMethodId",
+        "type": "hidden",
+        "value": "18"
+    },
+    {
+        "bacname": "quoteItemId",
+        "type": "hidden",
+        "value": ""
+    },
+    {
+        "bacname": "quoteId",
+        "type": "hidden",
+        "value": ""
+    },
+    {
+        "bacname": "step",
+        "type": "hidden",
+        "value": ""
+    },
+    {
+        "bacname": "getAddressApi",
+        "type": "hidden",
+        "value": "Q2iEgiL-hkCppww2KdarRg3675"
+    },
+    {
+        "bacname": "source",
+        "type": "hidden",
+        "value": "vd1"
+    },
+    {
+        "bacname": "financeApplicationDTO.title",
+        "placeholder": "Title",
+        "name": "title",
+        "type": "select",
+        "value": "",
+        "values": [
+            {
+                "value": "",
+                "label": "-- Please Select a Title --",
+                "disabled": true,
+                "selected": true
+            },
+            {
+                "value": "Mr",
+                "label": "Mr"
+            },
+            {
+                "value": "Mrs",
+                "label": "Mrs"
+            },
+            {
+                "value": "Ms",
+                "label": "Ms"
+            },
+            {
+                "value": "Miss",
+                "label": "Miss"
+            },
+            {
+                "value": "Dr",
+                "label": "Dr"
+            }
+        ]
+    },
+    {
+        "bacname": "financeApplicationDTO.firstName",
+        "placeholder": "First Name",
+        "name": "fname",
+        "autocomplete": "given-name",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.lastName",
+        "placeholder": "Last Name",
+        "name": "lname",
+        "autocomplete": "family-name",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.emailAddress",
+        "placeholder": "Email",
+        "name": "email",
+        "autocomplete": "email",
+        "type": "email",
+        "value": "",
+        "datalist": {
+            "id": "email",
+            "values" : []
+        }
+    },
+    {
+        "bacname": "financeApplicationDTO.telephoneNumber",
+        "placeholder": "Telephone Number",
+        "name": "phone",
+        "autocomplete": "tel",
+        "type": "tel",
+        "pattern": "^\\s*\\(?(020[7,8]{1}\\)?[ ]?[1-9]{1}[0-9{2}[ ]?[0-9]{4})|(0[1-8]{1}[0-9]{3}\\)?[ ]?[1-9]{1}[0-9]{2}[ ]?[0-9]{3})\\s*$",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.mobile",
+        "placeholder": "Mobile Number",
+        "name": "mobile",
+        "autocomplete": "tel",
+        "pattern": "^\\s*\\(?(020[7,8]{1}\\)?[ ]?[1-9]{1}[0-9{2}[ ]?[0-9]{4})|(0[1-8]{1}[0-9]{3}\\)?[ ]?[1-9]{1}[0-9]{2}[ ]?[0-9]{3})\\s*$",
+        "type": "tel",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.day",
+        "label": "DOB Date",
+        "placeholder": "DD",
+        "name": "dob-day",
+        "type": "number",
+        "pattern": "[0-9]*",
+        "min": 1,
+        "max": 31,
+        "limit": 2,
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.month",
+        "label": "DOB Month",
+        "placeholder": "MM",
+        "name": "dob-month",
+        "type": "number",
+        "pattern": "[0-9]*",
+        "min": 1,
+        "max": 12,
+        "limit": 2,
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.year",
+        "label": "DOB Year",
+        "placeholder": "YYYY",
+        "name": "dob-year",
+        "type": "number",
+        "limit": 4,
+        "pattern": "[0-9]*",
+        "min": 1900,
+        "max": 2100,
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.maritalStatus",
+        "placeholder": "Marital Status",
+        "name": "maritalStatus",
+        "type": "select",
+        "value": "",
+        "values": [
+            {
+                "value": "",
+                "label": "-- Please Select your Marital Status --",
+                "disabled": true,
+                "selected": true
+            },
+            {
+                "value": "Single",
+                "label": "Single"
+            },
+            {
+                "value": "Married",
+                "label": "Married"
+            },
+            {
+                "value": "Common Law",
+                "label": "Common Law"
+            },
+            {
+                "value": "Separated",
+                "label": "Separated"
+            },
+            {
+                "value": "Divorced",
+                "label": "Divorced"
+            },
+            {
+                "value": "Widowed",
+                "label": "Widowed"
+            }
+        ]
+    },
+    {
+        "bacname": "financeApplicationDTO.dependents",
+        "placeholder": "Dependents",
+        "name": "dependents",
+        "pattern": "[0-9]*",
+        "min": 0,
+        "max": 50,
+        "limit": 2,
+        "type": "number",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.drivingLicenceType",
+        "placeholder": "Driving Licence Type",
+        "name": "drivingLicenceType",
+        "type": "select",
+        "value": "",
+        "values": [
+            {
+                "value": "",
+                "label": "-- Please Select your licence type --",
+                "disabled": true,
+                "selected": true
+            },
+            {
+                "value": "Full",
+                "label": "Full"
+            },
+            {
+                "value": "Non_UK",
+                "label": "Non UK"
+            },
+            {
+                "value": "Provisional",
+                "label": "Provisional"
+            },
+            {
+                "value": "None",
+                "label": "None"
+            }
+        ]
+    },
+    {
+        "bacname": "__checkbox_financeApplicationDTO.validUKPassport",
+        "placeholder": "Valid UK Passport",
+        "name": "validUKPassport",
+        "type": "checkbox",
+        "value": false
+    },
+    {
+        "bacname": "financeApplicationDTO.addresses[0].postCode",
+        "placeholder": "Postcode",
+        "name": "postal",
+        "autocomplete": "postal-code",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.addresses[0].houseName",
+        "placeholder": "House Name",
+        "name": "address-houseName",
+        "autocomplete": "address-line1",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.addresses[0].houseNumber",
+        "placeholder": "House Number",
+        "name": "address-houseNumber",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.addresses[0].street",
+        "placeholder": "Street",
+        "name": "address",
+        "autocomplete": "address-line2",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.addresses[0].district",
+        "placeholder": "District",
+        "name": "city",
+        "autocomplete": "address-level1",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.addresses[0].town",
+        "placeholder": "Town",
+        "name": "postal",
+        "autocomplete": "address-level2",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.addresses[0].county",
+        "placeholder": "County",
+        "name": "province",
+        "autocomplete": "address-level1",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.addresses[0].residentialStatus",
+        "placeholder": "Residential Status",
+        "name": "residentialStatus",
+        "type": "option",
+        "value": "",
+        "values": [
+            {
+                "value": "",
+                "label": "-- Please Select your Residential Status --",
+                "disabled": true,
+                "selected": true
+            },
+            {
+                "value": "HOME OWNER",
+                "label": "HOME OWNER"
+            },
+            {
+                "value": "CO HOME OWNER",
+                "label": "CO HOME OWNER"
+            },
+            {
+                "value": "COUNCIL TENANT",
+                "label": "COUNCIL TENANT"
+            },
+            {
+                "value": "HOUSING ASSOCIATION",
+                "label": "HOUSING ASSOCIATION"
+            },
+            {
+                "value": "LIVING WITH PARENTS",
+                "label": "LIVING WITH PARENTS"
+            },
+            {
+                "value": "PRIVATE TENANT",
+                "label": "PRIVATE TENANT"
+            }
+        ]
+    },
+    {
+        "bacname": "financeApplicationDTO.addresses[0].residenceYears",
+        "placeholder": "Residence Years",
+        "name": "residenceYears",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.addresses[0].residenceMonths",
+        "placeholder": "Residence Months",
+        "name": "residenceMonths",
+        "type": "number",
+        "min": 0,
+        "max": 11,
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].employmentType",
+        "placeholder": "Employment Type",
+        "name": "employmentType",
+        "type": "option",
+        "value": "",
+        "values": [
+            {
+                "value": "",
+                "label": "-- Please Select your employment type--",
+                "disabled": true,
+                "selected": true
+            },
+            {
+                "value": "FULL_TIME_PERMANENT",
+                "label": "FULL TIME PERMANENT"
+            },
+            {
+                "value": "PART_TIME_PERMANENT",
+                "label": "PART TIME PERMANENT"
+            },
+            {
+                "value": "FULL_TIME_TEMPORARY",
+                "label": "FULL TIME TEMPORARY"
+            },
+            {
+                "value": "PART_TIME_TEMPORARY",
+                "label": "PART TIME TEMPORARY"
+            },
+            {
+                "value": "FULL_TIME_AGENCY",
+                "label": "FULL TIME AGENCY"
+            },
+            {
+                "value": "PART_TIME_AGENCY",
+                "label": "PART TIME AGENCY"
+            },
+            {
+                "value": "PART_TIME_TEMPORARY",
+                "label": "PART TIME TEMPORARY"
+            },
+            {
+                "value": "SUB_CONTRACTOR",
+                "label": "SUB CONTRACTOR"
+            },
+            {
+                "value": "SELF_EMPLOYED",
+                "label": "SELF EMPLOYED"
+            },
+            {
+                "value": "UNEMPLOYED",
+                "label": "UNEMPLOYED"
+            },
+            {
+                "value": "RETIRED",
+                "label": "RETIRED"
+            },
+            {
+                "value": "STUDENT",
+                "label": "STUDENT"
+            },
+            {
+                "value": "HOUSE_WIFE",
+                "label": "HOUSE WIFE"
+            },
+            {
+                "value": "UNABLE_TO_WORK",
+                "label": "UNABLE TO WORK"
+            }
+        ]
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].employmentSector",
+        "placeholder": "Employment Sector",
+        "name": "employmentSector",
+        "type": "option",
+        "value": "",
+        "values": [
+            {
+                "value": "",
+                "label": "-- Please Select your employment sector --",
+                "disabled": true,
+                "selected": true
+            },
+            {
+                "value": "PRIVATE",
+                "label": "PRIVATE"
+            },
+            {
+                "value": "GOVERNMENT",
+                "label": "GOVERNMENT"
+            },
+            {
+                "value": "MILITARY",
+                "label": "MILITARY"
+            },
+            {
+                "value": "SELF EMPLOYED",
+                "label": "SELF EMPLOYED"
+            },
+            {
+                "value": "STUDENT",
+                "label": "STUDENT"
+            },
+            {
+                "value": "HOME MAKER",
+                "label": "HOME MAKER"
+            },
+            {
+                "value": "RETIRED",
+                "label": "RETIRED"
+            },
+            {
+                "value": "UNEMPLOYED",
+                "label": "UNEMPLOYED"
+            },
+            {
+                "value": "UNABLE_TO_WORK",
+                "label": "UNABLE TO WORK"
+            }
+        ]
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].jobTitle",
+        "placeholder": "Job Title",
+        "name": "jobTitle",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].postCode",
+        "placeholder": "Postcode",
+        "name": "jobPostCode",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].employer",
+        "placeholder": "Employer",
+        "name": "employer",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].buildingName",
+        "placeholder": "Building Name",
+        "name": "buildingName",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].building",
+        "placeholder": "Building",
+        "name": "building",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].street",
+        "placeholder": "Street",
+        "name": "street",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].district",
+        "placeholder": "District",
+        "name": "district",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].town",
+        "placeholder": "Town",
+        "name": "town",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].county",
+        "placeholder": "County",
+        "name": "county",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].income",
+        "placeholder": "Income",
+        "name": "income",
+        "min": 0,
+        "type": "number",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].employmentYears",
+        "placeholder": "Employment Years",
+        "name": "employmentYears",
+        "min": 0,
+        "max": 100,
+        "type": "number",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.employments[0].employmentMonths",
+        "placeholder": "Employment Months",
+        "name": "employmentMonths",
+        "min": 0,
+        "max": 11,
+        "type": "number",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.bankDetails.accountNumber",
+        "placeholder": "Account Number",
+        "name": "accountNumber",
+        "type": "number",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.bankDetails.sortCode",
+        "placeholder": "Sort Code",
+        "name": "sortCode",
+        "type": "text",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.bankDetails.years",
+        "placeholder": "Years",
+        "name": "years",
+        "type": "number",
+        "value": ""
+    },
+    {
+        "bacname": "financeApplicationDTO.bankDetails.months",
+        "placeholder": "Months",
+        "name": "months",
+        "type": "number",
+        "value": ""
+    }
+]
