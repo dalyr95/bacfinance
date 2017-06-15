@@ -132,38 +132,10 @@
     },
     {
         "bacname": "financeApplicationDTO.day",
-        "label": "DOB Date",
-        "placeholder": "DD",
+        "label": "Date Of Birth",
+        "placeholder": "DD/MM/YYYY",
         "name": "dob-day",
-        "type": "number",
-        "pattern": "[0-9]*",
-        "min": 1,
-        "max": 31,
-        "limit": 2,
-        "value": ""
-    },
-    {
-        "bacname": "financeApplicationDTO.month",
-        "label": "DOB Month",
-        "placeholder": "MM",
-        "name": "dob-month",
-        "type": "number",
-        "pattern": "[0-9]*",
-        "min": 1,
-        "max": 12,
-        "limit": 2,
-        "value": ""
-    },
-    {
-        "bacname": "financeApplicationDTO.year",
-        "label": "DOB Year",
-        "placeholder": "YYYY",
-        "name": "dob-year",
-        "type": "number",
-        "limit": 4,
-        "pattern": "[0-9]*",
-        "min": 1900,
-        "max": 2100,
+        "type": "date",
         "value": ""
     },
     {
@@ -259,8 +231,20 @@
         "placeholder": "Postcode",
         "name": "postal",
         "autocomplete": "postal-code",
+        "pattern": "^[A-Za-z]{1,2}\\d{1,2}([A-Za-z]{1,2})?\\s*\\d{1}[A-Za-z]{2}\\s*$",
         "type": "text",
-        "value": ""
+        "value": "",
+        "findAddress": {
+            "fields":         [
+                "financeApplicationDTO.addresses[0].houseName",
+                "financeApplicationDTO.addresses[0].houseNumber",
+                "financeApplicationDTO.addresses[0].street",
+                "financeApplicationDTO.addresses[0].district",
+                "financeApplicationDTO.addresses[0].town",
+                "financeApplicationDTO.addresses[0].county"
+            ],
+            "addresses": []
+        }
     },
     {
         "bacname": "financeApplicationDTO.addresses[0].houseName",
