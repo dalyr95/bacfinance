@@ -231,6 +231,7 @@
         "placeholder": "Postcode",
         "name": "postal",
         "autocomplete": "postal-code",
+        "autocapitalize": true,
         "pattern": "^[A-Za-z]{1,2}\\d{1,2}([A-Za-z]{1,2})?\\s*\\d{1}[A-Za-z]{2}\\s*$",
         "type": "text",
         "value": "",

@@ -4,7 +4,7 @@
 			<virtual each={ value, i in state }>
 				<label>
 					{ value.label || value.placeholder } / { value.value }
-					<input if={ value.type !== 'select' && value.type !== 'checkbox' } class={ empty: (value.value.length === 0), findAddress: value.findAddress } type={ value.type } name={ value.name } value={ value.value } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } min={ value.min } max={ value.max } list={ value.datalist && value.datalist.id } maxlength={ value.limit } required oninput={ onchange.bind(this, value.bacname) } />
+					<input if={ value.type !== 'select' && value.type !== 'checkbox' } class={ empty: (value.value.length === 0), findAddress: value.findAddress } type={ value.type } name={ value.name } value={ value.value } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } min={ value.min } max={ value.max } list={ value.datalist && value.datalist.id } maxlength={ value.limit } required autocapitalize={ (value.autocapitalize) ? 'characters' : false } oninput={ onchange.bind(this, value.bacname) } />
 					<datalist if={ value.datalist } id={ value.datalist.id }>
 						<option each={ v, i in value.datalist.values } value={ v } />
 					</datalist>
@@ -62,6 +62,11 @@
 
 			this.state.forEach(function(obj) {
 				if (obj.bacname === name) {
+
+					if (obj.autocapitalize === true) {
+						value = value.toUpperCase();
+					}
+
 					obj.value = value; 
 
 					if (obj.type === 'email' && obj.datalist && value.search('@') > -1) {
@@ -115,7 +120,7 @@
 
             		obj.addressString = a.join(',');
             		obj.addressObject = addressObject;
-            		console.log(22, obj);
+
             		return obj;
             	});
 
