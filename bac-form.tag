@@ -1,113 +1,67 @@
-<bac-form>
-	<div class="container" if={ state }>
-		<form>
-			<virtual each={ value, i in state }>
-				<label>
-					{ value.label || value.placeholder } / { value.value }
-					<input if={ value.type !== 'select' && value.type !== 'checkbox' } class={ empty: (value.value.length === 0), findAddress: value.findAddress } type={ value.type } name={ value.name } value={ value.value } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } min={ value.min } max={ value.max } list={ value.datalist && value.datalist.id } maxlength={ value.limit } required autocapitalize={ (value.autocapitalize) ? 'characters' : false } oninput={ onchange.bind(this, value.bacname) } />
-					<datalist if={ value.datalist } id={ value.datalist.id }>
-						<option each={ v, i in value.datalist.values } value={ v } />
-					</datalist>
-					<button if={ value.findAddress } class="findAddress" disabled={ value.value.length === 0} onclick={ findAddress.bind(this, value.bacname) }>Find Address</button>
+<bac-form-input>
+	<label>
+		{ value.label || value.placeholder } / { value.value }
+		<input if={ value.type !== 'select' && value.type !== 'checkbox' } class={ empty: (value.value.length === 0), findAddress: value.findAddress } type={ value.type } name={ value.name } value={ value.value } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } min={ value.min } max={ value.max } list={ value.datalist && value.datalist.id } maxlength={ value.limit } required autocapitalize={ (value.autocapitalize) ? 'characters' : false } oninput={ onchange.bind(this, value.bacname) } />
+		<datalist if={ value.datalist } id={ value.datalist.id }>
+			<option each={ v, i in value.datalist.values } value={ v } />
+		</datalist>
+		<button if={ value.findAddress } class="findAddress" disabled={ value.value.length === 0 } onclick={ findAddress.bind(this, value.bacname) }>Find Address</button>
 
-					<ul if={ value.findAddress && value.findAddress.addresses.length > 0} class="address_dropdown">
-						<li each={ address, i in value.findAddress.addresses } onclick={ foundAddress.bind(this, address, value.bacname) }>{ address.addressString }</li>
-					</ul>
+		<ul if={ value.findAddress && value.findAddress.addresses.length > 0} class="address_dropdown">
+			<li each={ address, i in value.findAddress.addresses } onclick={ foundAddress.bind(this, address, value.bacname) }>{ address.addressString }</li>
+		</ul>
 
-					<input if={ value.type === 'checkbox' } class={ empty: (value.value.length === 0) } type="checkbox" checked={ (value.value === true) } name={ value.name } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } required onchange={ checkboxOnChange }/>
+		<input if={ value.type === 'checkbox' } class={ empty: (value.value.length === 0) } type="checkbox" checked={ (value.value === true) } name={ value.name } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } required onchange={ checkboxOnChange }/>
 
-					<select if={ value.type === 'select' } name={ value.name } onchange={ onchange }>
-						<option each={ value.values } value={ value } disabled={ disabled } selected={ selected } required>{ label }</option>
-					</select>
-				</label>
-			</virtual>
-		</form>
-	</div>
+		<select if={ value.type === 'select' } name={ value.name } onchange={ onchange.bind(this, value.bacname) }>
+			<option each={ value.values } value={ value } disabled={ disabled } selected={ selected } required>{ label }</option>
+		</select>
+	</label>
+
 
 	<script>
-		window.tag = this;
+		var mapRefs = function() {
+			this.value = this.opts.riotValue;
+			this.i = this.opts.i;
+		}.bind(this);
 
-		this.on('before-mount', function() {
-			console.log('before-mount');
-            var xhr = new XMLHttpRequest();
+		mapRefs();
 
-            xhr.addEventListener('load', function(data) {
-                this.state = JSON.parse(data.currentTarget.responseText);
-                this.update();
-            }.bind(this));
-
-            xhr.open('GET', 'bac-form.json', true);
-            xhr.send();
-
-            var xhr = new XMLHttpRequest();
-
-            xhr.addEventListener('load', function(data) {
-                this.emails = JSON.parse(data.currentTarget.responseText);
-            }.bind(this));
-
-            xhr.open('GET', 'bac-emails.json', true);
-            xhr.send();
-		});
-
-		this.on('mount', function(e) {
-			this.root.addEventListener('animationstart', function(e) {
-				console.log(e);
-			});
-		});
+		this.on('update', mapRefs);
 
 		this.onchange = function(name, e) {
-			console.log(e.currentTarget.value);
-
-			var value 	= e.currentTarget.value;
-
-			this.state.forEach(function(obj) {
-				if (obj.bacname === name) {
-
-					if (obj.autocapitalize === true) {
-						value = value.toUpperCase();
-					}
-
-					obj.value = value; 
-
-					if (obj.type === 'email' && obj.datalist && value.search('@') > -1) {
-						var firstPart = value.split('@')[0];
-
-						obj.datalist.values = this.emails.map(function(v) {
-							return firstPart + '@' + v;
-						}).slice(0,8);
-					}
-				}
-			}.bind(this));
+			RiotControl.trigger('onchange', name, e);
 
 			if (e.currentTarget.tagName === 'SELECT') {
-				e.currentTarget.parentNode.nextElementSibling.querySelector('input').focus();
+				e.currentTarget.parentNode.parentNode.nextElementSibling.querySelector('input').focus();
 			}
 		}
 
 		this.checkboxOnChange = function(e) {
-			console.log(e.currentTarget.checked);
-
-			this.state.forEach(function(obj) {
-				if (obj.name === e.currentTarget.name) { obj.value = e.currentTarget.checked; }
-			});
+			RiotControl.trigger('checkboxOnChange', e);
 		}
 
 		this.findAddress = function(value, e) {
 			console.log(value, e);
 			e.preventDefault();
 
+			console.log(RiotControl.trigger('getState'));
 			value = this.state.filter(function(v) {
 				return (v.bacname === value);
 			});
 
 			value = value[0];
-			console.log(value);
+
             var xhr = new XMLHttpRequest();
 
             xhr.addEventListener('load', function(data) {
             	var keys = 'Line1,Line2,Line3,Line4,Locality,Town/City,County'.split(',');
             	console.log(keys);
-            	data = JSON.parse(data.currentTarget.responseText).Addresses.map(function(address) {
+            	var data = JSON.parse(data.currentTarget.responseText);
+
+            	if (!data.Addresses) { alert('Sorry, couldn\'t find an address for "' + value.value + '".'); return; }
+
+            	data = data.Addresses.map(function(address) {
             		var obj = {};
             		var addressObject = {};
 
@@ -136,18 +90,28 @@
 		}
 
 		this.foundAddress = function(value, field, e) {
-			console.log(value, field);
+			console.log(0, field);
 			var field = this.state.filter(function(v) {
 				return (field === v.bacname);
 			})[0];
+			console.log(field);
 
 			field.findAddress.addresses = [];
 
 			document.removeEventListener('click', this.removeOverlays);
 
-			console.log(value);
+			var keys = Object.keys(field.findAddress.fields);
 
-			console.log(1, field);
+			keys.forEach(function(key) {
+				this.state.forEach(function(obj) {
+					if (obj.bacname === key) {
+						console.log(value.addressObject[field.findAddress.fields[key]]);
+						obj.value = value.addressObject[field.findAddress.fields[key]];
+					}
+				});
+			}.bind(this));
+
+			console.log(this.state);
 		}
 
 		this.removeOverlays = function(e) {
@@ -165,6 +129,41 @@
 			document.removeEventListener('click', this.removeOverlays);
 		}.bind(this);
 	</script>
+</bac-form-input>
+
+<bac-form>
+	<div class="container" if={ state }>
+		<form>
+			<virtual each={ value, i in state }>
+				<div if={ value.title } class={ collapsed: value.collapsed }>
+					<h2>{ value.title }</h2>
+					<virtual each={ value1, i1 in value.values }>
+						<bac-form-input value={ value1 } i={ i1 }></bac-form-input>
+					</virtual>
+				</div>
+				<virtual if={ !value.title }>
+					<bac-form-input value={ value } i={ i }></bac-form-input>
+				</virtual>
+			</virtual>
+		</form>
+	</div>
+
+	<script>
+		window.tag = this;
+
+		this.on('before-mount', function() {
+			RiotControl.trigger('init');
+		});
+
+		RiotControl.on('update_state', function(state) {
+			this.state = state;
+			this.update();
+		}.bind(this));
+
+		RiotControl.on('update_emails', function(emails) {
+			this.emails = emails;
+		}.bind(this));
+	</script>
 
 	<style>
 		.container {
@@ -175,6 +174,19 @@
 			min-height: 100vh;
 			padding: 10px;
 			width: 640px;
+		}
+
+		div.collapsed {
+			overflow: hidden;
+			height: 58px;
+		}
+
+		h2 {
+			background-color: #f40057;
+			color: #fff;
+			margin: 10px -10px;
+			padding: 10px;
+			width: calc(100% + 20px);
 		}
 
 		label {
