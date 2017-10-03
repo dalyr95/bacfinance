@@ -42,91 +42,90 @@
 		}
 
 		this.findAddress = function(value, e) {
-			console.log(value, e);
 			e.preventDefault();
 
-			console.log(RiotControl.trigger('getState'));
-			value = this.state.filter(function(v) {
-				return (v.bacname === value);
+			var state;
+
+			var job = function(state) {
+				var values = [];
+
+				state.forEach(function(v) {
+					if (v.title) {
+						v.values.forEach(function(vv) {
+							if (vv.bacname === value) { values.push(vv); }
+						});
+					} else {
+						if (v.bacname === value) { values.push(v); }
+					}
+				});
+
+				value = values[0];
+
+	            var xhr = new XMLHttpRequest();
+
+	            xhr.addEventListener('load', function(data) {
+	            	var keys = 'Line1,Line2,Line3,Line4,Locality,Town/City,County'.split(',');
+
+	            	var data = JSON.parse(data.currentTarget.responseText);
+
+	            	if (!data.Addresses) { alert('Sorry, couldn\'t find an address for "' + value.value + '".'); return; }
+
+	            	data = data.Addresses.map(function(address) {
+	            		var obj = {};
+	            		var addressObject = {};
+
+	            		var a = address.split(',');
+	            		a = a.filter(function(v, index) {
+	            			v = v.trim();
+	            			addressObject[keys[index].toLowerCase()] = v;
+	            			return (v.length > 0);
+	            		});
+
+	            		obj.addressString = a.join(',');
+	            		obj.addressObject = addressObject;
+
+	            		return obj;
+	            	});
+
+	                value.findAddress.addresses = data;
+
+	                document.addEventListener('click', this.removeOverlays, {
+	                	passive: true,
+	                	once: true
+	                });
+
+	                this.update();
+	            }.bind(this));
+
+	            xhr.open('GET', 'https://api.getaddress.io/v2/uk/' + value.value + '?api-key=Q2iEgiL-hkCppww2KdarRg3675', true);
+	            xhr.send();
+	        }.bind(this);
+
+
+			RiotControl.one('returnState', function(state) {
+				console.log(state);
+				job(state);
 			});
-
-			value = value[0];
-
-            var xhr = new XMLHttpRequest();
-
-            xhr.addEventListener('load', function(data) {
-            	var keys = 'Line1,Line2,Line3,Line4,Locality,Town/City,County'.split(',');
-            	console.log(keys);
-            	var data = JSON.parse(data.currentTarget.responseText);
-
-            	if (!data.Addresses) { alert('Sorry, couldn\'t find an address for "' + value.value + '".'); return; }
-
-            	data = data.Addresses.map(function(address) {
-            		var obj = {};
-            		var addressObject = {};
-
-            		var a = address.split(',');
-            		a = a.filter(function(v, index) {
-            			v = v.trim();
-            			addressObject[keys[index].toLowerCase()] = v;
-            			return (v.length > 0);
-            		});
-
-            		obj.addressString = a.join(',');
-            		obj.addressObject = addressObject;
-
-            		return obj;
-            	});
-
-                value.findAddress.addresses = data;
-
-                document.addEventListener('click', this.removeOverlays);
-
-                this.update();
-            }.bind(this));
-
-            xhr.open('GET', 'https://api.getaddress.io/v2/uk/' + value.value + '?api-key=Q2iEgiL-hkCppww2KdarRg3675', true);
-            xhr.send();
+			RiotControl.trigger('getState');
 		}
 
 		this.foundAddress = function(value, field, e) {
-			console.log(0, field);
-			var field = this.state.filter(function(v) {
-				return (field === v.bacname);
-			})[0];
-			console.log(field);
-
-			field.findAddress.addresses = [];
-
-			document.removeEventListener('click', this.removeOverlays);
-
-			var keys = Object.keys(field.findAddress.fields);
-
-			keys.forEach(function(key) {
-				this.state.forEach(function(obj) {
-					if (obj.bacname === key) {
-						console.log(value.addressObject[field.findAddress.fields[key]]);
-						obj.value = value.addressObject[field.findAddress.fields[key]];
-					}
-				});
-			}.bind(this));
-
-			console.log(this.state);
+			RiotControl.trigger('foundAddress', value, field, e);
+			document.removeEventListener('click', this.removeOverlays, {
+            	passive: true,
+            	once: true
+            });
 		}
 
 		this.removeOverlays = function(e) {
-			console.log('click');
-
 			if (this.root.querySelector('.findAddress').contains(e.currentTarget) === false) {
-				this.state = this.state.map(function(value) {
-					if (value.findAddress) { value.findAddress.addresses = []; }
-					return value;
-				});
-
-				this.update();
+				RiotControl.trigger('resetAddressList');
 			}
 
-			document.removeEventListener('click', this.removeOverlays);
+			document.removeEventListener('click', this.removeOverlays, {
+            	passive: true,
+            	once: true
+            });
 		}.bind(this);
 	</script>
 </bac-form-input>

@@ -8,6 +8,8 @@ function store() {
 		this.trigger('update_emails', this.emails);
 	}.bind(this));
 
+
+
     var xhr = new XMLHttpRequest();
 
     xhr.addEventListener('load', function(data) {
@@ -28,9 +30,13 @@ function store() {
     xhr.open('GET', 'bac-emails.json', true);
     xhr.send();
 
+
+
     this.on('getState', function() {
-    	return this.state;
-    })
+    	this.trigger('returnState', this.state);
+    }.bind(this));
+
+
 
     this.on('onchange', function(name, e) {
 		var value 	= e.currentTarget.value;
@@ -69,6 +75,7 @@ function store() {
 	}.bind(this));
 
 
+
 	this.on('checkboxOnChange', function(e) {
 		var job = function(obj) {
 			if (obj.name === e.currentTarget.name) { obj.value = e.currentTarget.checked; }
@@ -80,6 +87,63 @@ function store() {
 				});
 			} else {
 				obj = job(obj);
+			}
+		});
+
+		this.trigger('update_state', this.state);
+	}.bind(this));
+
+
+
+	this.on('foundAddress', function(value, field, e) {
+		var val;
+
+		var field = this.state.forEach(function(v) {
+			if (v.title) {
+				v.values.forEach(function(vv) {
+					if (field === vv.bacname) { val = vv; }
+				});
+			} else {
+				if (field === v.bacname) { val = v; }
+			}
+		});
+
+		field = val;
+
+		field.findAddress.addresses = [];
+
+		var keys = Object.keys(field.findAddress.fields);
+
+		keys.forEach(function(key) {
+			this.state.forEach(function(obj) {
+				if (obj.title) {
+					obj.values.forEach(function(obj1) {
+						if (obj1.bacname === key) {
+							obj1.value = value.addressObject[field.findAddress.fields[key]];
+						}
+					});
+				} else {
+					if (obj.bacname === key) {
+						obj.value = value.addressObject[field.findAddress.fields[key]];
+					}
+				}
+			});
+		}.bind(this));
+
+		this.trigger('update_state', this.state);
+
+	}.bind(this));
+
+
+
+	this.on('resetAddressList', function() {
+		this.state.forEach(function(value) {
+			if (value.title) {
+				value.values.forEach(function(value1) {
+					if (value1.findAddress) { value1.findAddress.addresses = []; }
+				});
+			} else {
+				if (value.findAddress) { value.findAddress.addresses = []; }
 			}
 		});
 
