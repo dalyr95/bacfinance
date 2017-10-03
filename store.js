@@ -96,6 +96,106 @@ function store() {
 
 
 	this.on('foundAddress', function(value, field, e) {
+
+		/* AUSTIN CODE */
+		var isNumeric = function(number) {
+		    var dependents = /^\d*$/;
+		    if ((number.match(dependents))) {
+		        return true;
+		    } else {
+		        return false;
+		    }
+		}
+
+		var companyLookup = /employments/.test(field);
+
+		var addressParts = value.addressOrig.split(',');
+		var add0 = addressParts[0].trim();
+		var add1 = addressParts[1].trim();
+		var add2 = addressParts[2].trim();
+		var add3 = addressParts[3].trim();
+
+		var employer = '',
+		    houseName = '',
+		    houseNumber = '',
+		    street = '',
+		    summaryDesc = '';
+
+
+
+		if (add3 != '') {
+		    street = add3;
+		    if (companyLookup) {
+		        employer = add0;
+		        houseName = add1 + ', ' + add2;
+		    } else {
+		        houseName = add0 + ', ' + add1 + ', ' + add2;
+		    }
+		    summaryDesc = add0 + ', ' + add1 + ', ' + add2 + ', ' + add3;
+		} else if (add2 != '') {
+		    street = add2;
+		    if (companyLookup) {
+		        employer = add0;
+		        houseName = add1;
+		    } else {
+		        houseName = add0 + ', ' + add1;
+		    }
+		    summaryDesc = add0 + ', ' + add1 + ', ' + add2;
+		} else if (add1 != '') {
+		    street = add1;
+		    if (companyLookup) {
+		        employer = add0;
+		    } else {
+		        houseName = add0;
+		    }
+		    summaryDesc = add0 + ', ' + add1;
+		} else if (add0 != '') {
+		    //if only one postcode item, is it street or houseName. We chose by houseNumber being present
+		    if (isNumeric(add0.charAt(0))) {
+		        street = add0;
+		    } else if (companyLookup) {
+		        employer = add0;
+		    } else {
+		        houseName = add0;
+		    }
+		    summaryDesc = add0;
+		}
+
+		var index = street.indexOf(' ');
+		var tempHouseNumber = street.substring(0, index).trim();
+		var tempStreet = street.substring(index).trim();
+
+		if (isNumeric(tempHouseNumber.charAt(0))) {
+		    street = tempStreet;
+		    houseNumber = tempHouseNumber;
+		}
+
+		var district = addressParts[4].trim();
+		var town = addressParts[5].trim();
+		var county = addressParts[6].trim();
+
+		if (district != '') {
+		    summaryDesc = summaryDesc + ', ' + district;
+		}
+		if (town != '') {
+		    summaryDesc = summaryDesc + ', ' + town;
+		}
+		if (county != '') {
+		    summaryDesc = summaryDesc + ', ' + county;
+		}
+		/* END AUSTIN CODE */
+
+	    var addressObject = {
+			'employer': employer,
+		    'houseName': houseName,
+		    'houseNumber': houseNumber,
+		    'district': district,
+		    'town': town,
+		    'street': street,
+		    'summaryDesc': summaryDesc,
+		    'county': county    	
+	    }
+
 		var val;
 
 		var field = this.state.forEach(function(v) {
@@ -119,12 +219,12 @@ function store() {
 				if (obj.title) {
 					obj.values.forEach(function(obj1) {
 						if (obj1.bacname === key) {
-							obj1.value = value.addressObject[field.findAddress.fields[key]];
+							obj1.value = addressObject[field.findAddress.fields[key]];
 						}
 					});
 				} else {
 					if (obj.bacname === key) {
-						obj.value = value.addressObject[field.findAddress.fields[key]];
+						obj.value = addressObject[field.findAddress.fields[key]];
 					}
 				}
 			});
@@ -148,5 +248,26 @@ function store() {
 		});
 
 		this.trigger('update_state', this.state);
+	}.bind(this));
+
+
+
+	this.on('updateProgress', function() {
+		var total = 0;
+		var green = 0;
+
+		this.state.forEach(function(v) {
+			if (v.title) {
+				v.values.forEach(function(value) {
+					total++;
+					if (!value.value || value.value.length === 0) { green++; }
+				}.bind(this));
+			}
+		});
+
+		var left = parseInt(green/total*100, 10);
+		var progress = 100 - left;
+		console.log(progress);
+		this.trigger('update_progress', progress);
 	}.bind(this));
 }

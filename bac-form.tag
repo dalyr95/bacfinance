@@ -1,7 +1,7 @@
-<bac-form-input>
+<bac-form-input class={ finance_half: value.half }>
 	<label>
 		{ value.label || value.placeholder } / { value.value }
-		<input if={ value.type !== 'select' && value.type !== 'checkbox' } class={ empty: (value.value.length === 0), findAddress: value.findAddress } type={ value.type } name={ value.name } value={ value.value } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } min={ value.min } max={ value.max } list={ value.datalist && value.datalist.id } maxlength={ value.limit } required autocapitalize={ (value.autocapitalize) ? 'characters' : false } oninput={ onchange.bind(this, value.bacname) } />
+		<input if={ value.type !== 'select' && value.type !== 'checkbox' } class={ empty: (value.value.length === 0), findAddress: value.findAddress } type={ value.type } name={ value.name } value={ value.value } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } min={ value.min } max={ value.max } list={ value.datalist && value.datalist.id } maxlength={ value.limit } required autocapitalize={ (value.autocapitalize) ? 'characters' : false } oninput={ onchange.bind(this, value.bacname) } onblur={ this.inputBlur }/>
 		<datalist if={ value.datalist } id={ value.datalist.id }>
 			<option each={ v, i in value.datalist.values } value={ v } />
 		</datalist>
@@ -13,8 +13,8 @@
 
 		<input if={ value.type === 'checkbox' } class={ empty: (value.value.length === 0) } type="checkbox" checked={ (value.value === true) } name={ value.name } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } required onchange={ checkboxOnChange }/>
 
-		<select if={ value.type === 'select' } name={ value.name } onchange={ onchange.bind(this, value.bacname) }>
-			<option each={ value.values } value={ value } disabled={ disabled } selected={ selected } required>{ label }</option>
+		<select if={ value.type === 'select' } class={ empty: (value.value.length === 0) } name={ value.name } onchange={ onchange.bind(this, value.bacname) } required>
+			<option each={ value.values } value={ value } disabled={ disabled } selected={ selected }>{ label }</option>
 		</select>
 	</label>
 
@@ -33,7 +33,11 @@
 			RiotControl.trigger('onchange', name, e);
 
 			if (e.currentTarget.tagName === 'SELECT') {
-				e.currentTarget.parentNode.parentNode.nextElementSibling.querySelector('input').focus();
+				if (e.currentTarget.checkValidity() === true) {
+					RiotControl.trigger('updateProgress');
+				}
+				var $focusEl = e.currentTarget.parentNode.parentNode.nextElementSibling.querySelector('input');
+				if ($focusEl) { $focusEl.focus(); }
 			}
 		}
 
@@ -81,8 +85,9 @@
 	            			return (v.length > 0);
 	            		});
 
-	            		obj.addressString = a.join(',');
-	            		obj.addressObject = addressObject;
+	            		obj.addressString 	= a.join(',');
+	            		obj.addressObject 	= addressObject;
+	            		obj.addressOrig 	= address;
 
 	            		return obj;
 	            	});
@@ -97,7 +102,7 @@
 	                this.update();
 	            }.bind(this));
 
-	            xhr.open('GET', 'https://api.getaddress.io/v2/uk/' + value.value + '?api-key=Q2iEgiL-hkCppww2KdarRg3675', true);
+	            xhr.open('GET', 'https://api.getaddress.io/v2/uk/' + value.value.trim() + '?api-key=Q2iEgiL-hkCppww2KdarRg3675', true);
 	            xhr.send();
 	        }.bind(this);
 
@@ -127,18 +132,31 @@
             	once: true
             });
 		}.bind(this);
+
+		this.inputBlur = function(e) {
+			if (e.currentTarget.checkValidity() === true) {
+				RiotControl.trigger('updateProgress');
+			}
+		}
 	</script>
 </bac-form-input>
 
 <bac-form>
 	<div class="container" if={ state }>
+		<div class="finance_progress">
+			<div>
+				<span style="left: calc({ this.progress }% - 8px);"></span>
+				<em style="width: calc({ this.progress }% - 8px);"></em>
+			</div>
+		</div>
 		<form>
 			<virtual each={ value, i in state }>
-				<div if={ value.title } class={ collapsed: value.collapsed }>
+				<div if={ value.title } class={ collapsed: value.collapsed, finance_section: true }>
 					<h2>{ value.title }</h2>
 					<virtual each={ value1, i1 in value.values }>
 						<bac-form-input value={ value1 } i={ i1 }></bac-form-input>
 					</virtual>
+					<button onclick={ nextStep }>Next</button>
 				</div>
 				<virtual if={ !value.title }>
 					<bac-form-input value={ value } i={ i }></bac-form-input>
@@ -149,6 +167,8 @@
 
 	<script>
 		window.tag = this;
+
+		this.progress = 0;
 
 		this.on('before-mount', function() {
 			RiotControl.trigger('init');
@@ -162,6 +182,34 @@
 		RiotControl.on('update_emails', function(emails) {
 			this.emails = emails;
 		}.bind(this));
+
+		RiotControl.on('update_progress', function(progress) {
+			var update = (progress !== this.progress);
+			this.progress = progress;
+			if (update) { this.update(); }
+		}.bind(this));
+
+
+
+		this.nextStep = function(e) {
+			e.preventDefault();
+
+			var fails = [];
+			[].slice.call(e.currentTarget.parentNode.querySelectorAll('input[required], select[required]')).forEach(function(input) {
+				if (input.checkValidity() === false) { fails.push(input); }
+			});
+
+			if (fails.length > 0) {
+				fails.forEach(function($fail) {
+					$fail.classList.remove('empty');
+					$fail.classList.add('finance_fail');
+				});
+			} else {
+				var $nextStep = e.currentTarget.parentNode.nextElementSibling;
+
+				if ($nextStep) { $nextStep.classList.remove('collapsed'); }
+			}
+		}.bind(this);
 	</script>
 
 	<style>
@@ -171,7 +219,7 @@
 			margin: 0 auto;
 			max-width: 100vw;
 			min-height: 100vh;
-			padding: 10px;
+			padding: 10px 0;
 			width: 640px;
 		}
 
@@ -180,11 +228,15 @@
 			height: 58px;
 		}
 
+		.finance_section {
+			padding: 10px;
+		}
+
 		h2 {
 			background-color: #f40057;
 			color: #fff;
-			margin: 10px -10px;
 			padding: 10px;
+			margin: 0 -10px 10px;
 			width: calc(100% + 20px);
 		}
 
@@ -212,11 +264,13 @@
 			border-color: #666;
 		}
 
-		input:not(.empty):not(:focus):valid {
+		input:not(.empty):not(:focus):valid,
+		select:not(.empty):not(:focus):valid  {
 			border-color: #43e97b;
 		}
 
-		input:not(.empty):not(:focus):invalid {
+		input:not(.empty):not(:focus):invalid,
+		select:not(.empty):not(:focus):invalid {
 			border-color: orange;
 		}
 
@@ -264,5 +318,79 @@
 		.address_dropdown li:last-child {
 			border-bottom: none;
 		}
+
+		.finance_fail:invalid {
+			animation-duration: 1s;
+			animation-name: finance_fail;
+			transform: translate3d(0, 0, 0);
+		}
+
+		@keyframes finance_fail {
+			from {
+				box-shadow: 0 0 0 0 orange;
+			}
+			50% {
+				box-shadow: 0 0 5px 0px orange;
+			}
+			to {
+				box-shadow: 0 0 0 0 orange;
+			}
+		}
+
+		.finance_half {
+			float: left;
+			width: calc(50% - 20px);
+		}
+
+		.finance_half + .finance_half {
+			float: right;
+		}
+
+		.finance_progress {
+			-webkit-backdrop-filter: blur(2px);
+			backdrop-filter: blur(2px);
+			background-color: rgba(255,255,255,0.9);
+			border-bottom: 1px solid #ccc;
+			height: 52px;
+			position: fixed;
+			top:  0;
+			width: 100%;
+			left: 0;
+			z-index: 1;
+		}
+
+		.finance_progress div {
+			background-color: #ccc;
+			height: 2px;
+			position: relative;
+			width: 75vw;
+			margin: 25px auto;
+		}
+
+		.finance_progress div span {
+			background-color: #43e97b;
+			height: 16px;
+			width: 16px;
+			border-radius: 100%;
+			position: absolute;
+			left: 0;
+			top: -7px;
+			transform: translate3d(0, 0, 0);
+			transition: left 0.2s linear;
+			box-shadow: 0 1px 2px 0 rgba(0,0,0,0.6);
+		}
+
+		.finance_progress div em {
+			background-color: #43e97b;
+			display: block;
+			left: 0;
+			position: absolute;
+			top: 0;
+			width: 0;
+		    height: 2px;
+		    transition: width 0.2s linear;
+
+		}
+
 	</style>
 </bac-form>

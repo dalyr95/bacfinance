@@ -244,12 +244,12 @@
             "value": "",
             "findAddress": {
                 "fields": {
-                    "financeApplicationDTO.addresses[0].houseName": "line1",
-                    "financeApplicationDTO.addresses[0].houseNumber": "line2",
-                    "financeApplicationDTO.addresses[0].street" : "line3",
-                    "financeApplicationDTO.addresses[0].district": "locality",
-                    "financeApplicationDTO.addresses[0].town" : "town/city",
-                    "financeApplicationDTO.addresses[0].county": "line4"
+                    "financeApplicationDTO.addresses[0].houseName": "houseName",
+                    "financeApplicationDTO.addresses[0].houseNumber": "houseNumber",
+                    "financeApplicationDTO.addresses[0].street" : "street",
+                    "financeApplicationDTO.addresses[0].district": "district",
+                    "financeApplicationDTO.addresses[0].town" : "town",
+                    "financeApplicationDTO.addresses[0].county": "county"
                 },
                 "addresses": []
             }
@@ -305,7 +305,7 @@
             "bacname": "financeApplicationDTO.addresses[0].residentialStatus",
             "placeholder": "Residential Status",
             "name": "residentialStatus",
-            "type": "option",
+            "type": "select",
             "value": "",
             "values": [
                 {
@@ -347,7 +347,8 @@
             "type": "number",
             "min": 0,
             "max": 100,
-            "value": ""
+            "value": "",
+            "half": true
         },
         {
             "bacname": "financeApplicationDTO.addresses[0].residenceMonths",
@@ -356,7 +357,8 @@
             "type": "number",
             "min": 0,
             "max": 11,
-            "value": ""
+            "value": "",
+            "half": true
         }]
     },
     {
@@ -367,7 +369,7 @@
         "bacname": "financeApplicationDTO.employments[0].employmentType",
         "placeholder": "Employment Type",
         "name": "employmentType",
-        "type": "option",
+        "type": "select",
         "value": "",
         "values": [{
                         "value": "",
@@ -437,7 +439,7 @@
             "bacname": "financeApplicationDTO.employments[0].employmentSector",
             "placeholder": "Employment Sector",
             "name": "employmentSector",
-            "type": "option",
+            "type": "select",
             "value": "",
             "values": [
                 {
@@ -496,7 +498,24 @@
             "placeholder": "Postcode",
             "name": "jobPostCode",
             "type": "text",
-            "value": ""
+            "value": "",
+            "autocomplete": "postal-code",
+            "autocapitalize": true,
+            "pattern": "^[A-Za-z]{1,2}\\d{1,2}([A-Za-z]{1,2})?\\s*\\d{1}[A-Za-z]{2}\\s*$",
+            "type": "text",
+            "value": "",
+            "findAddress": {
+                "fields": {
+                    "financeApplicationDTO.employments[0].employer": "employer",
+                    "financeApplicationDTO.employments[0].buildingName": "houseName",
+                    "financeApplicationDTO.employments[0].building" : "houseNumber",
+                    "financeApplicationDTO.employments[0].street" : "street",
+                    "financeApplicationDTO.employments[0].district": "district",
+                    "financeApplicationDTO.employments[0].town" : "town",
+                    "financeApplicationDTO.employments[0].county": "county"
+                },
+                "addresses": []
+            }
         },
         {
             "bacname": "financeApplicationDTO.employments[0].employer",
