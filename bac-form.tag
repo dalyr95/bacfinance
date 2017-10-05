@@ -4,7 +4,7 @@
 </bac-form-raw>
 
 <bac-form-input class={ finance_half: value.half }>
-	<label>
+	<label if={ value.type !== 'hidden'}>
 		{ value.label || value.placeholder } / { value.value }
 		<input if={ value.type !== 'select' && value.type !== 'checkbox' && value.type !== 'html' } class={ empty: (value.value.length === 0), findAddress: value.findAddress } type={ value.type } name={ value.name } value={ value.value } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } min={ value.min } max={ value.max } list={ value.datalist && value.datalist.id } maxlength={ value.limit } required={ value.required !== false } autocapitalize={ (value.autocapitalize) ? 'characters' : false } oninput={ onchange.bind(this, value.bacname) } onblur={ this.inputBlur }/>
 		<datalist if={ value.datalist } id={ value.datalist.id }>
@@ -28,6 +28,8 @@
 			<li each={ address, i in value.findAddress.addresses } onclick={ foundAddress.bind(this, address, value.bacname) }>{ address.addressString }</li>
 		</ul>
 	</label>
+
+	<input if={ value.type === 'hidden' } type={ value.type } name={ value.name } value={ value.value } />
 
 
 	<script>
