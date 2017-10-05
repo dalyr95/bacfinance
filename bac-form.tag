@@ -5,7 +5,7 @@
 
 <bac-form-input class={ finance_half: value.half }>
 	<label if={ value.type !== 'hidden'}>
-		{ value.label || value.placeholder } / { value.value }
+		{ value.label || value.placeholder }<sup if={ value.required !== false }> *</sup> <virtual if={ debug }> / { value.value }</virtual>
 		<input if={ value.type !== 'select' && value.type !== 'checkbox' && value.type !== 'html' } class={ empty: (value.value.length === 0), findAddress: value.findAddress } type={ value.type } name={ value.name } value={ value.value } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } min={ value.min } max={ value.max } list={ value.datalist && value.datalist.id } maxlength={ value.limit } required={ value.required !== false } autocapitalize={ (value.autocapitalize) ? 'characters' : false } oninput={ onchange.bind(this, value.bacname) } onblur={ this.inputBlur }/>
 		<datalist if={ value.datalist } id={ value.datalist.id }>
 			<option each={ v, i in value.datalist.values } value={ v } />
@@ -33,6 +33,8 @@
 
 
 	<script>
+		this.debug = true;
+
 		var mapRefs = function() {
 			this.value = this.opts.riotValue;
 			this.i = this.opts.i;
@@ -292,6 +294,10 @@
 			margin-bottom: 10px;
 			position: relative;
 			min-height: 40px;
+		}
+
+		label sup {
+			color: red;
 		}
 
 		select,

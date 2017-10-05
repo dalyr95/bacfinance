@@ -288,6 +288,7 @@ function store() {
 
 	this.on('checkMultiples', function(title) {
 		var months = 0;
+		var monthsNeedsAction = false;
 		var repeats = 0;
 
 		var updateSectionAfter;
@@ -306,11 +307,13 @@ function store() {
 
 				updateSectionAfter = i;
 				repeats++;
+
+				monthsNeedsAction = true;
 			}
 		});
 
-
-		if (months >= 36) {
+		console.log(title, months, monthsNeedsAction);
+		if (monthsNeedsAction === false && months >= 36) {
 			console.log('proceed');
 		} else {
 			var originalState = JSON.parse(this.originalState);

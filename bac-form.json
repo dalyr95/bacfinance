@@ -270,6 +270,7 @@
             "autocomplete": "address-line1",
             "type": "text",
             "value": "",
+            "required": false,
             "tooltip": "If your house has a name, please enter it here. We need either a name or house number"
         },
         {
@@ -278,6 +279,7 @@
             "name": "address-houseNumber",
             "type": "text",
             "value": "",
+            "required": false,
             "tooltip": "If your house has a name, please enter it here. We need either a name or house number"
         },
         {
@@ -295,6 +297,7 @@
             "autocomplete": "address-level1",
             "type": "text",
             "value": "",
+            "required": false,
             "tooltip": "If applicable please enter the district, suburb or village name"
         },
         {
@@ -311,6 +314,7 @@
             "name": "province",
             "autocomplete": "address-level1",
             "type": "text",
+            "required": false,
             "value": ""
         },
         {
