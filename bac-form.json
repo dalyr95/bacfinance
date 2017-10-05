@@ -113,7 +113,8 @@
             "datalist": {
                 "id": "email",
                 "values" : []
-            }
+            },
+            "tooltip": "Your email address will also be your username to log in"
         },
         {
             "bacname": "financeApplicationDTO.telephoneNumber",
@@ -189,7 +190,8 @@
             "max": 50,
             "limit": 2,
             "type": "number",
-            "value": ""
+            "value": "",
+            "tooltip": "How many people rely on you for financial support (such as children)?"
         },
         {
             "bacname": "financeApplicationDTO.drivingLicenceType",
@@ -220,19 +222,25 @@
                     "value": "None",
                     "label": "None"
                 }
-            ]
+            ],
+            "tooltip": "What type of driving licence do you hold?"
         },
         {
             "bacname": "__checkbox_financeApplicationDTO.validUKPassport",
             "placeholder": "Valid UK Passport",
             "name": "validUKPassport",
             "type": "checkbox",
-            "value": false
+            "value": false,
+            "required": false,
+            "tooltip": "Please tick if you hold a British passport"
         }]
     },
     {
         "title": "Address",
         "collapsed": true,
+        "multiple": {
+            "critera": "(residenceYears * 12) + residenceMonths > 36"
+        },
         "values": [{
             "bacname": "financeApplicationDTO.addresses[0].postCode",
             "placeholder": "Postcode",
@@ -252,7 +260,8 @@
                     "financeApplicationDTO.addresses[0].county": "county"
                 },
                 "addresses": []
-            }
+            },
+            "tooltip": "Please enter your postcode and click 'Find address'. If your address can't be found, please enter the details"
         },
         {
             "bacname": "financeApplicationDTO.addresses[0].houseName",
@@ -260,14 +269,16 @@
             "name": "address-houseName",
             "autocomplete": "address-line1",
             "type": "text",
-            "value": ""
+            "value": "",
+            "tooltip": "If your house has a name, please enter it here. We need either a name or house number"
         },
         {
             "bacname": "financeApplicationDTO.addresses[0].houseNumber",
             "placeholder": "House Number",
             "name": "address-houseNumber",
             "type": "text",
-            "value": ""
+            "value": "",
+            "tooltip": "If your house has a name, please enter it here. We need either a name or house number"
         },
         {
             "bacname": "financeApplicationDTO.addresses[0].street",
@@ -283,7 +294,8 @@
             "name": "city",
             "autocomplete": "address-level1",
             "type": "text",
-            "value": ""
+            "value": "",
+            "tooltip": "If applicable please enter the district, suburb or village name"
         },
         {
             "bacname": "financeApplicationDTO.addresses[0].town",
@@ -348,7 +360,8 @@
             "min": 0,
             "max": 100,
             "value": "",
-            "half": true
+            "half": true,
+            "pattern": "[0-9]*"
         },
         {
             "bacname": "financeApplicationDTO.addresses[0].residenceMonths",
@@ -358,20 +371,24 @@
             "min": 0,
             "max": 11,
             "value": "",
-            "half": true
+            "half": true,
+            "tooltip": "We need to know your current address and any previous addresses up to 3 years",
+            "pattern": "[0-9]*"
         }]
     },
     {
         "title": "Employment",
         "collapsed": true,
-        "values": [
-    {
-        "bacname": "financeApplicationDTO.employments[0].employmentType",
-        "placeholder": "Employment Type",
-        "name": "employmentType",
-        "type": "select",
-        "value": "",
+        "multiple": {
+            "critera": "(employmentYears * 12) + employmentMonths > 36"
+        },
         "values": [{
+            "bacname": "financeApplicationDTO.employments[0].employmentType",
+            "placeholder": "Employment Type",
+            "name": "employmentType",
+            "type": "select",
+            "value": "",
+            "values": [{
                         "value": "",
                         "label": "-- Please Select your employment type--",
                         "disabled": true,
@@ -433,65 +450,68 @@
                         "value": "UNABLE_TO_WORK",
                         "label": "UNABLE TO WORK"
                     }
-                ]
+                ],
+                "tooltip": "Please select the most suitable primary job status"
             },
             {
-            "bacname": "financeApplicationDTO.employments[0].employmentSector",
-            "placeholder": "Employment Sector",
-            "name": "employmentSector",
-            "type": "select",
-            "value": "",
-            "values": [
-                {
-                    "value": "",
-                    "label": "-- Please Select your employment sector --",
-                    "disabled": true,
-                    "selected": true
-                },
-                {
-                    "value": "PRIVATE",
-                    "label": "PRIVATE"
-                },
-                {
-                    "value": "GOVERNMENT",
-                    "label": "GOVERNMENT"
-                },
-                {
-                    "value": "MILITARY",
-                    "label": "MILITARY"
-                },
-                {
-                    "value": "SELF EMPLOYED",
-                    "label": "SELF EMPLOYED"
-                },
-                {
-                    "value": "STUDENT",
-                    "label": "STUDENT"
-                },
-                {
-                    "value": "HOME MAKER",
-                    "label": "HOME MAKER"
-                },
-                {
-                    "value": "RETIRED",
-                    "label": "RETIRED"
-                },
-                {
-                    "value": "UNEMPLOYED",
-                    "label": "UNEMPLOYED"
-                },
-                {
-                    "value": "UNABLE_TO_WORK",
-                    "label": "UNABLE TO WORK"
-                }
-            ]
+                "bacname": "financeApplicationDTO.employments[0].employmentSector",
+                "placeholder": "Employment Sector",
+                "name": "employmentSector",
+                "type": "select",
+                "value": "",
+                "values": [
+                    {
+                        "value": "",
+                        "label": "-- Please Select your employment sector --",
+                        "disabled": true,
+                        "selected": true
+                    },
+                    {
+                        "value": "PRIVATE",
+                        "label": "PRIVATE"
+                    },
+                    {
+                        "value": "GOVERNMENT",
+                        "label": "GOVERNMENT"
+                    },
+                    {
+                        "value": "MILITARY",
+                        "label": "MILITARY"
+                    },
+                    {
+                        "value": "SELF EMPLOYED",
+                        "label": "SELF EMPLOYED"
+                    },
+                    {
+                        "value": "STUDENT",
+                        "label": "STUDENT"
+                    },
+                    {
+                        "value": "HOME MAKER",
+                        "label": "HOME MAKER"
+                    },
+                    {
+                        "value": "RETIRED",
+                        "label": "RETIRED"
+                    },
+                    {
+                        "value": "UNEMPLOYED",
+                        "label": "UNEMPLOYED"
+                    },
+                    {
+                        "value": "UNABLE_TO_WORK",
+                        "label": "UNABLE TO WORK"
+                    }
+                ],
+                "tooltip": "Please Select Your Employment Sector. If you work for a regular for-profit company this is most likely the PRIVATE sector"
         },
         {
             "bacname": "financeApplicationDTO.employments[0].jobTitle",
             "placeholder": "Job Title",
             "name": "jobTitle",
             "type": "text",
-            "value": ""
+            "value": "",
+            "tooltip": "Please enter your job title. Write n/a if you are not working"
         },
         {
             "bacname": "financeApplicationDTO.employments[0].postCode",
@@ -515,14 +535,16 @@
                     "financeApplicationDTO.employments[0].county": "county"
                 },
                 "addresses": []
-            }
+            },
+            "tooltip": "Please enter your company's postcode and click 'Find address'. If your address can't be found, please enter the details"
         },
         {
             "bacname": "financeApplicationDTO.employments[0].employer",
             "placeholder": "Employer",
             "name": "employer",
             "type": "text",
-            "value": ""
+            "value": "",
+            "tooltip": "What is the name of the company you work for? Write n/a if it does not apply"
         },
         {
             "bacname": "financeApplicationDTO.employments[0].buildingName",
@@ -550,7 +572,8 @@
             "placeholder": "District",
             "name": "district",
             "type": "text",
-            "value": ""
+            "value": "",
+            "tooltip": "If applicable please enter the district, suburb or village name"
         },
         {
             "bacname": "financeApplicationDTO.employments[0].town",
@@ -572,7 +595,9 @@
             "name": "income",
             "min": 0,
             "type": "number",
-            "value": ""
+            "value": "",
+            "tooltip": "Please enter your current yearly salary before tax including any regular commission or overtime",
+            "pattern": "[0-9]*"
         },
         {
             "bacname": "financeApplicationDTO.employments[0].employmentYears",
@@ -581,7 +606,9 @@
             "min": 0,
             "max": 100,
             "type": "number",
-            "value": ""
+            "value": "",
+            "half": true,
+            "pattern": "[0-9]*"
         },
         {
             "bacname": "financeApplicationDTO.employments[0].employmentMonths",
@@ -590,11 +617,14 @@
             "min": 0,
             "max": 11,
             "type": "number",
-            "value": ""
+            "value": "",
+            "half": true,
+            "tooltip": "We need your current employment and any previous employment details up to 3 years",
+            "pattern": "[0-9]*"
         }]
     },
     {
-        "title": "Bank Details",
+        "title": "Other Details",
         "collapsed": true,
         "values": [
                     {
@@ -602,29 +632,50 @@
                         "placeholder": "Account Number",
                         "name": "accountNumber",
                         "type": "number",
-                        "value": ""
+                        "value": "",
+                        "required": false,
+                        "tooltip": "Your bank account number is 8 digits long and can usually be found on your debit card, cheque book or online banking service",
+                        "pattern": "[0-9]*"
                     },
                     {
                         "bacname": "financeApplicationDTO.bankDetails.sortCode",
                         "placeholder": "Sort Code",
                         "name": "sortCode",
                         "type": "text",
-                        "value": ""
+                        "value": "",
+                        "required": false,
+                        "tooltip": "Your bank sort code is 6 digits long and can usually be found next to your account number. Please enter in the format 00-00-00",
+                        "pattern": "[0-9]*"
                     },
                     {
                         "bacname": "financeApplicationDTO.bankDetails.years",
-                        "placeholder": "Years",
+                        "placeholder": "Years at bank",
                         "name": "years",
                         "type": "number",
-                        "value": ""
+                        "value": "",
+                        "half": true,
+                        "required": false,
+                        "pattern": "[0-9]*"
                     },
                     {
                         "bacname": "financeApplicationDTO.bankDetails.months",
-                        "placeholder": "Months",
+                        "placeholder": "Months at bank",
                         "name": "months",
                         "type": "number",
-                        "value": ""
+                        "value": "",
+                        "half": true,
+                        "required": false,
+                        "tooltip": "Please select time at bank",
+                        "pattern": "[0-9]*"
                     }
                 ]
+    },
+    {
+        "title": "Confirm",
+        "collapsed": true,
+        "values": [{
+            "type": "html",
+            "value": "<p>Almost done. Click the Complete Quote button to agree to our <a href=\"#\" onclick=\"event.preventDefault(); window.tag.financeModal();\">Application Terms</a> and we'll get to work with our panel of lenders to find the very best finance quote for you.<br/>Please ensure the contact details you provided are correct as we'll keep you up to date with the progress of your application by telephone, email and SMS.</p>"
+        }]
     }
 ]

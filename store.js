@@ -13,7 +13,9 @@ function store() {
     var xhr = new XMLHttpRequest();
 
     xhr.addEventListener('load', function(data) {
-        this.state = JSON.parse(data.currentTarget.responseText);
+    	this.originalState 	= data.currentTarget.responseText;
+        this.state 			= JSON.parse(data.currentTarget.responseText);
+
         this.trigger('update_state', this.state);
     }.bind(this));
 
@@ -47,14 +49,24 @@ function store() {
 					value = value.toUpperCase();
 				}
 
+				if (obj.type === 'tel') {
+					value = value.replace(/\+\s*44\s*/, '0');
+				}
+
 				obj.value = value; 
 
 				if (obj.type === 'email' && obj.datalist && value.search('@') > -1) {
-					var firstPart = value.split('@')[0];
+					var snap = value.split('@');
+					var firstPart = snap[0];
+					var lastPart = snap[1];
 
-					obj.datalist.values = this.emails.map(function(v) {
-						return firstPart + '@' + v;
-					}).slice(0,8);
+					if (lastPart.length > 0) {
+						obj.datalist.values = this.emails.map(function(v) {
+							return firstPart + '@' + v;
+						});
+					} else {
+						obj.datalist.values = [];
+					}
 				}
 			}
 
@@ -253,6 +265,7 @@ function store() {
 
 
 	this.on('updateProgress', function() {
+		console.log('updateProgress');
 		var total = 0;
 		var green = 0;
 
@@ -269,5 +282,57 @@ function store() {
 		var progress = 100 - left;
 		console.log(progress);
 		this.trigger('update_progress', progress);
+	}.bind(this));
+
+
+
+	this.on('checkMultiples', function(title) {
+		var months = 0;
+		var repeats = 0;
+
+		var updateSectionAfter;
+
+		this.state.forEach(function(v, i) {
+			if (v.title && v.title === title && v.multiple) {
+
+				v.values.forEach(function(value) {
+					if (value.value && /[a-z]*Years/.test(value.name)) {
+						months += parseInt(value.value, 10) * 12;
+					}
+					if (value.value && /[a-z]*Months/.test(value.name)) {
+						months += parseInt(value.value, 10);
+					}
+				});
+
+				updateSectionAfter = i;
+				repeats++;
+			}
+		});
+
+
+		if (months >= 36) {
+			console.log('proceed');
+		} else {
+			var originalState = JSON.parse(this.originalState);
+
+			var addSection;
+
+			originalState.forEach(function(v) {
+				if (v.title && v.title === title && v.multiple) {
+					v.collapsed = false;
+					v.displayTitle = 'Previous ' + title + ' ' + repeats;
+					v.values.forEach(function(value) {
+						value.bacname = value.bacname.replace(/\[[0-9]*\]/, '[' + repeats + ']');
+					});
+
+					addSection = JSON.stringify(v);
+					console.log(v);
+				}
+			});
+
+			this.state.splice(updateSectionAfter + 1, 0, JSON.parse(addSection));
+
+			this.trigger('multiplePass');
+		}
 	}.bind(this));
 }

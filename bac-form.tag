@@ -1,21 +1,32 @@
+<bac-form-raw>
+  <span></span>
+  this.root.innerHTML = this.opts.content;
+</bac-form-raw>
+
 <bac-form-input class={ finance_half: value.half }>
 	<label>
 		{ value.label || value.placeholder } / { value.value }
-		<input if={ value.type !== 'select' && value.type !== 'checkbox' } class={ empty: (value.value.length === 0), findAddress: value.findAddress } type={ value.type } name={ value.name } value={ value.value } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } min={ value.min } max={ value.max } list={ value.datalist && value.datalist.id } maxlength={ value.limit } required autocapitalize={ (value.autocapitalize) ? 'characters' : false } oninput={ onchange.bind(this, value.bacname) } onblur={ this.inputBlur }/>
+		<input if={ value.type !== 'select' && value.type !== 'checkbox' && value.type !== 'html' } class={ empty: (value.value.length === 0), findAddress: value.findAddress } type={ value.type } name={ value.name } value={ value.value } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } min={ value.min } max={ value.max } list={ value.datalist && value.datalist.id } maxlength={ value.limit } required={ value.required !== false } autocapitalize={ (value.autocapitalize) ? 'characters' : false } oninput={ onchange.bind(this, value.bacname) } onblur={ this.inputBlur }/>
 		<datalist if={ value.datalist } id={ value.datalist.id }>
 			<option each={ v, i in value.datalist.values } value={ v } />
 		</datalist>
 		<button if={ value.findAddress } class="findAddress" disabled={ value.value.length === 0 } onclick={ findAddress.bind(this, value.bacname) }>Find Address</button>
 
-		<ul if={ value.findAddress && value.findAddress.addresses.length > 0} class="address_dropdown">
-			<li each={ address, i in value.findAddress.addresses } onclick={ foundAddress.bind(this, address, value.bacname) }>{ address.addressString }</li>
-		</ul>
-
-		<input if={ value.type === 'checkbox' } class={ empty: (value.value.length === 0) } type="checkbox" checked={ (value.value === true) } name={ value.name } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } required onchange={ checkboxOnChange }/>
+		<input if={ value.type === 'checkbox' } class={ empty: (value.value.length === 0) } type="checkbox" checked={ (value.value === true) } name={ value.name } autocomplete={ value.autocomplete } placeholder={ value.placeholder } pattern={ value.pattern } required={ value.required !== false } onchange={ checkboxOnChange }/>
 
 		<select if={ value.type === 'select' } class={ empty: (value.value.length === 0) } name={ value.name } onchange={ onchange.bind(this, value.bacname) } required>
 			<option each={ value.values } value={ value } disabled={ disabled } selected={ selected }>{ label }</option>
 		</select>
+
+		<div if={ value.type === 'html' }>
+			<bac-form-raw content={ value.value }>/<bac-form-raw>
+		</div>
+
+		<div class="finance_tooltip" if={ value.tooltip } data-value={ value.tooltip }>?</div>
+
+		<ul if={ value.findAddress && value.findAddress.addresses.length > 0} class="address_dropdown">
+			<li each={ address, i in value.findAddress.addresses } onclick={ foundAddress.bind(this, address, value.bacname) }>{ address.addressString }</li>
+		</ul>
 	</label>
 
 
@@ -152,23 +163,36 @@
 		<form>
 			<virtual each={ value, i in state }>
 				<div if={ value.title } class={ collapsed: value.collapsed, finance_section: true }>
-					<h2>{ value.title }</h2>
+					<h2>{ value.displayTitle || value.title }</h2>
 					<virtual each={ value1, i1 in value.values }>
 						<bac-form-input value={ value1 } i={ i1 }></bac-form-input>
 					</virtual>
-					<button onclick={ nextStep }>Next</button>
+					<button onclick={ nextStep.bind(this, value.title) }>Next</button>
 				</div>
 				<virtual if={ !value.title }>
 					<bac-form-input value={ value } i={ i }></bac-form-input>
 				</virtual>
 			</virtual>
 		</form>
+
+		<div class="finance_modal" if={ this.modalDisplay === true } onclick={ closeFinanceModal }>
+			<div class="finance_modal_content">
+				<div class="finance_modal_close">&times;</div>
+				<h3>Data Protection Act</h3>
+				Credit reference searches will be conducted by the lenders in order to establish your credit worthiness. On occasions we will have to try more than one lender from our panel to obtain a credit acceptance which may result in several credit searches being registered. Additional information may be required and lenders may on occasions contact employers as part of their checks. Alternative terms may be offered.
+				Non payment of credit agreements and default will severely affect your credit rating and may result with the agreement vehicle being repossessed by the lender and or action being taken via the County Courts. The way you conduct your agreement is registered with all the Credit Reference Agencies and therefore any default could severely affect your chances of being accepted for credit in the future.
+				If you are taking out a Hire Purchase, Lease Purchase or Personal Loan agreement with a Balloon Payment at the end, please be aware that the Balloon (Residual value) is NOT GUARANTEED by the lender and is your responsibility to pay. If you require the protection of a Minimum Guaranteed Future Value you will need a PCP (Personal Contract Purchase) agreement.<br/>
+				Alternative (Direct) sources of finance are available to you i.e. Banks or via internet aggregators.<br/>
+				By agreeing below, you acknowledge that as part of the process of obtaining finance for your vehicle we will need to pass your details on to one or more of our finance partners A list of these partners together with their consumer credit licence numbers are available on request. You also acknowledge that any organisation approached for credit will need to undertake credit searches with a credit reference agency which may affect your credit rating.
+			</div>
+		</div>
 	</div>
 
 	<script>
 		window.tag = this;
 
 		this.progress = 0;
+		this.modalDisplay = false;
 
 		this.on('before-mount', function() {
 			RiotControl.trigger('init');
@@ -191,11 +215,13 @@
 
 
 
-		this.nextStep = function(e) {
+		this.nextStep = function(title, e) {
 			e.preventDefault();
 
+			var currentTarget = e.currentTarget;
+
 			var fails = [];
-			[].slice.call(e.currentTarget.parentNode.querySelectorAll('input[required], select[required]')).forEach(function(input) {
+			[].slice.call(currentTarget.parentNode.querySelectorAll('input[required], select[required]')).forEach(function(input) {
 				if (input.checkValidity() === false) { fails.push(input); }
 			});
 
@@ -205,11 +231,29 @@
 					$fail.classList.add('finance_fail');
 				});
 			} else {
-				var $nextStep = e.currentTarget.parentNode.nextElementSibling;
+				RiotControl.one('multiplePass', function() {
+					console.log(12345);
+					var $nextStep = currentTarget.parentNode.nextElementSibling;
 
-				if ($nextStep) { $nextStep.classList.remove('collapsed'); }
+					if ($nextStep) { $nextStep.classList.remove('collapsed'); }
+				});
+				RiotControl.trigger('checkMultiples', title);
 			}
 		}.bind(this);
+
+
+
+		this.financeModal = function(e) {
+			this.modalDisplay = true;
+			this.update();
+		}
+
+		this.closeFinanceModal = function(e) {
+			console.log(e.target);
+			if (!e.target.classList.contains('finance_modal_content')) {
+				this.modalDisplay = false;
+			}
+		}
 	</script>
 
 	<style>
@@ -219,7 +263,7 @@
 			margin: 0 auto;
 			max-width: 100vw;
 			min-height: 100vh;
-			padding: 10px 0;
+			padding: 62px 0 10px;
 			width: 640px;
 		}
 
@@ -245,6 +289,7 @@
 			margin-top: 5px;
 			margin-bottom: 10px;
 			position: relative;
+			min-height: 40px;
 		}
 
 		select,
@@ -294,6 +339,56 @@
 			right: 0;
 			width: 90px;
 			-webkit-appearance: none;
+		}
+
+		.finance_tooltip {
+			background-color: #ccc;
+			border-radius: 100%;
+			bottom: 5px;
+			color: #fff;
+			height: 30px;
+			line-height: 30px;
+			position: absolute;
+			right: 10px;
+			text-align: center;
+			width: 30px;
+		}
+
+		.finance_tooltip:hover:before {
+			background-color: #ccc;
+			content: '';
+			display: block;
+			height: 10px;
+			width: 10px;
+			transform: rotate(45deg) translate(-50%);
+			position: absolute;
+			top: -12px;
+			left: 50%;
+			pointer-events: none;
+		}
+
+		.finance_tooltip:hover:after {
+			content: attr(data-value);
+			padding: 10px;
+			background-color: #ccc;
+			display: block;
+			width: 200px;
+			position: absolute;
+			left: 50%;
+			bottom:  40px;
+			transform: translate3d(-50%, 0, 0);
+			z-index: 2;
+			pointer-events: none;
+		}
+
+		button + .finance_tooltip {
+			right: 110px;
+		}
+
+		@media (max-width: 800px) {
+			.finance_tooltip:hover:after {
+				transform: translate3d(-85%, 0, 0);
+			}
 		}
 
 		.address_dropdown {
@@ -390,6 +485,43 @@
 		    height: 2px;
 		    transition: width 0.2s linear;
 
+		}
+
+		.finance_modal {
+			cursor: pointer;
+			background-color: blue;
+			height: 100%;
+			position: fixed;
+			top: 0;
+			width: 100%;
+			z-index: 20;
+			left: 0;
+		}
+
+		.finance_modal_content {
+			cursor: default;
+			background-color: #fff;
+			padding: 20px;
+			left:  50%;
+			max-width: 640px;
+			position: fixed;
+			top: 50%;
+			transform: translate3d(-50%, -50%, 0);
+			width: 95vw;
+			max-height: 100vh;
+			overflow-y: scroll;
+			-webkit-overflow-scrolling: touch;
+		}
+
+		.finance_modal_close {
+			cursor: pointer;
+			height: 40px;
+			line-height: 40px;
+			position: absolute;
+			text-align: center;
+			width: 40px;
+			top: 0;
+			right: 0;
 		}
 
 	</style>
