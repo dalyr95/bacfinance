@@ -236,10 +236,14 @@
 					$fail.classList.add('finance_fail');
 				});
 			} else {
-				RiotControl.one('multiplePass', function() {
-					var $nextStep = currentTarget.parentNode.nextElementSibling;
+				RiotControl.one('multiplePass', function(removeClass) {
+					console.log('removeClass', removeClass);
+					// TODO - Move this to the store, change the collapsed attribute
+					if (removeClass === true) {
+						var $nextStep = document.querySelector('.collapsed');
 
-					if ($nextStep) { $nextStep.classList.remove('collapsed'); }
+						if ($nextStep) { $nextStep.classList.remove('collapsed'); }
+					}
 				});
 				RiotControl.trigger('checkMultiples', title);
 			}

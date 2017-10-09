@@ -108,7 +108,6 @@ function store() {
 
 
 	this.on('foundAddress', function(value, field, e) {
-		console.log('foundAddress', value, field, e);
 		/* AUSTIN CODE */
 		var isNumeric = function(number) {
 		    var dependents = /^\d*$/;
@@ -225,13 +224,11 @@ function store() {
 		field.findAddress.addresses = [];
 
 		var keys = Object.keys(field.findAddress.fields);
-		console.log('keys', keys);
-		console.log('field', field);
+
 		keys.forEach(function(key) {
 			this.state.forEach(function(obj) {
 				if (obj.title) {
 					obj.values.forEach(function(obj1) {
-						//console.log('obj1.bacname === key', obj1.bacname, key);
 						if (obj1.bacname === key) {
 							obj1.value = addressObject[field.findAddress.fields[key]];
 						}
@@ -267,7 +264,6 @@ function store() {
 
 
 	this.on('updateProgress', function() {
-		console.log('updateProgress');
 		var total = 0;
 		var green = 0;
 
@@ -282,7 +278,7 @@ function store() {
 
 		var left = parseInt(green/total*100, 10);
 		var progress = 100 - left;
-		console.log(progress);
+
 		this.trigger('update_progress', progress);
 	}.bind(this));
 
@@ -314,10 +310,8 @@ function store() {
 			}
 		});
 
-		console.log(title, months, monthsNeedsAction);
-		if (monthsNeedsAction === false && months >= 36) {
-			console.log('proceed');
-		} else {
+
+		if (monthsNeedsAction === true && months < 36) {
 			var originalState = JSON.parse(this.originalState);
 
 			var addSection;
@@ -328,7 +322,7 @@ function store() {
 					v.displayTitle = 'Previous ' + title + ' ' + repeats;
 					v.values.forEach(function(value) {
 						value.bacname = value.bacname.replace(/\[[0-9]*\]/, '[' + repeats + ']');
-						console.log('value', value);
+
 						if (value.findAddress && value.findAddress.fields) {
 							var newFields = {};
 
@@ -337,18 +331,20 @@ function store() {
 							});
 
 							value.findAddress.fields = newFields;
-							console.log(value.findAddress.fields);
 						}
 					});
 
 					addSection = JSON.stringify(v);
-					console.log(v);
 				}
 			});
 
 			this.state.splice(updateSectionAfter + 1, 0, JSON.parse(addSection));
-
-			this.trigger('multiplePass');
+		} else {
+			// TODO - Change collapsed attributes properly
+			// Set it back to false so multiplePass action will do something
+			monthsNeedsAction = false;
 		}
+
+		this.trigger('multiplePass', !monthsNeedsAction);
 	}.bind(this));
 }
