@@ -131,6 +131,7 @@
 
 		this.foundAddress = function(value, field, e) {
 			RiotControl.trigger('foundAddress', value, field, e);
+
 			document.removeEventListener('click', this.removeOverlays, {
             	passive: true,
             	once: true
@@ -236,7 +237,6 @@
 				});
 			} else {
 				RiotControl.one('multiplePass', function() {
-					console.log(12345);
 					var $nextStep = currentTarget.parentNode.nextElementSibling;
 
 					if ($nextStep) { $nextStep.classList.remove('collapsed'); }
@@ -253,7 +253,6 @@
 		}
 
 		this.closeFinanceModal = function(e) {
-			console.log(e.target);
 			if (!e.target.classList.contains('finance_modal_content')) {
 				this.modalDisplay = false;
 			}
@@ -459,7 +458,7 @@
 			top:  0;
 			width: 100%;
 			left: 0;
-			z-index: 1;
+			z-index: 10;
 		}
 
 		.finance_progress div {

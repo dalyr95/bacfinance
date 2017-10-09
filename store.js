@@ -108,7 +108,7 @@ function store() {
 
 
 	this.on('foundAddress', function(value, field, e) {
-
+		console.log('foundAddress', value, field, e);
 		/* AUSTIN CODE */
 		var isNumeric = function(number) {
 		    var dependents = /^\d*$/;
@@ -225,11 +225,13 @@ function store() {
 		field.findAddress.addresses = [];
 
 		var keys = Object.keys(field.findAddress.fields);
-
+		console.log('keys', keys);
+		console.log('field', field);
 		keys.forEach(function(key) {
 			this.state.forEach(function(obj) {
 				if (obj.title) {
 					obj.values.forEach(function(obj1) {
+						//console.log('obj1.bacname === key', obj1.bacname, key);
 						if (obj1.bacname === key) {
 							obj1.value = addressObject[field.findAddress.fields[key]];
 						}
@@ -326,6 +328,17 @@ function store() {
 					v.displayTitle = 'Previous ' + title + ' ' + repeats;
 					v.values.forEach(function(value) {
 						value.bacname = value.bacname.replace(/\[[0-9]*\]/, '[' + repeats + ']');
+						console.log('value', value);
+						if (value.findAddress && value.findAddress.fields) {
+							var newFields = {};
+
+							Object.keys(value.findAddress.fields).forEach(function(key) {
+								newFields[key.replace(/\[[0-9]*\]/, '[' + repeats + ']')] = value.findAddress.fields[key];
+							});
+
+							value.findAddress.fields = newFields;
+							console.log(value.findAddress.fields);
+						}
 					});
 
 					addSection = JSON.stringify(v);
